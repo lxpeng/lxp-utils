@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.yonyou.lxp.lxp_utils">
+    package="com.lxp.lxp_utils">
 
     <application
         android:allowBackup="true"
