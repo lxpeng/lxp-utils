@@ -2,6 +2,7 @@ package com.yonyou.lxp.lxp_utils.utils;
 
 import java.io.File;
 
+import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 
@@ -11,7 +12,9 @@ import android.os.StatFs;
  */
 public class SDCardUtils {
     private SDCardUtils() {
-        /* cannot be instantiated */
+        /**
+         * cannot be instantiated
+         */
         throw new UnsupportedOperationException("cannot be instantiated");
     }
 
@@ -39,9 +42,15 @@ public class SDCardUtils {
         if (isSDCardEnable()) {
             StatFs stat = new StatFs(getSDCardPath());
             // 获取空闲的数据块的数量
-            long availableBlocks = (long) stat.getAvailableBlocks() - 4;
+            long availableBlocks = 0;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                availableBlocks = (long) stat.getAvailableBlocksLong() - 4;
+            }
             // 获取单个数据块的大小（byte）
-            long freeBlocks = stat.getAvailableBlocks();
+            long freeBlocks = 0;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                freeBlocks = stat.getAvailableBlocksLong();
+            }
             return freeBlocks * availableBlocks;
         }
         return 0;
@@ -61,8 +70,14 @@ public class SDCardUtils {
             filePath = Environment.getDataDirectory().getAbsolutePath();
         }
         StatFs stat = new StatFs(filePath);
-        long availableBlocks = (long) stat.getAvailableBlocks() - 4;
-        return stat.getBlockSize() * availableBlocks;
+        long availableBlocks = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            availableBlocks = (long) stat.getAvailableBlocksLong() - 4;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            return stat.getBlockSizeLong() * availableBlocks;
+        }
+        return 0;
     }
 
     /**

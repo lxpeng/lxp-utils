@@ -1,9 +1,13 @@
 package com.yonyou.lxp.lxp_utils.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
+
+import java.io.File;
 
 /**
  * Created by liuxiaopeng on 16/1/31.
@@ -52,5 +56,23 @@ public class AppUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    /**
+     * 安装APK
+     * @param mContext 上下文
+     * @param apkPath  安装包路径
+     */
+    public static void installApk(Context mContext, String apkPath) {
+        File apkfile = new File(apkPath);
+        if (!apkfile.exists()) {
+            return;
+        }
+        // 通过Intent安装APK文件
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setDataAndType(Uri.parse("file://" + apkfile.toString()),
+                "application/vnd.android.package-archive");
+        mContext.startActivity(i);
     }
 }
