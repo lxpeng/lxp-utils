@@ -9,7 +9,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 /**
- * Created by liuxiaopeng on 16/1/31.
  * 跟网络相关的工具类
  */
 public class NetUtils {

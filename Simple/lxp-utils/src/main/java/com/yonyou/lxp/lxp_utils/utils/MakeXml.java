@@ -8,7 +8,7 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 
 /**
- * Created by liuxiaopeng on 16/3/3.
+ * 生成Value
  */
 public class MakeXml {
 

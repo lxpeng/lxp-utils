@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.TypedValue;
 
 /**
- * Created by liuxiaopeng on 16/1/31.
  * 常用单位转换的辅助类
  */
 public class DensityUtils {

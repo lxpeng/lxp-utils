@@ -5,7 +5,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 /**
- * Created by liuxiaopeng on 16/1/31.
  * 打开或关闭软键盘
  */
 public class KeyBoardUtils {

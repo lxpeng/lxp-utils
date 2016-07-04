@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.WindowManager;
 
 /**
- * Created by liuxiaopeng on 16/1/31.
  * 获得屏幕相关的辅助类
  */
 public class ScreenUtils {

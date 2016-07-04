@@ -6,7 +6,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * 作者： liuxiaopeng on 16/7/1.
  * 描述：封装简单的JSON解析
  */
 
@@ -21,7 +20,7 @@ public class JsonUtils {
         try {
             JSONObject object = new JSONObject(result);
             if (object.has(key)) {
-                String data = Tools.getJsonStr(result, key);
+                String data = getJsonStr(result, key);
                 if ("".equals(data)) {
                     return false;
                 }

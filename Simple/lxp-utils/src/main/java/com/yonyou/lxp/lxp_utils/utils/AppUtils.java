@@ -10,7 +10,6 @@ import android.net.Uri;
 import java.io.File;
 
 /**
- * Created by liuxiaopeng on 16/1/31.
  * 跟App相关的辅助类
  */
 public class AppUtils {
@@ -22,7 +21,22 @@ public class AppUtils {
     }
 
     /**
-     *
+     * 当前版本的包名
+     * @param context 上下文
+     * @return 获取当前版本的包名
+     */
+    public static String getPagerName(Context context) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.packageName;
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
      * @param context 上下文
      * @return 获取应用程序名称
      */
@@ -61,6 +75,7 @@ public class AppUtils {
 
     /**
      * 安装APK
+     *
      * @param mContext 上下文
      * @param apkPath  安装包路径
      */

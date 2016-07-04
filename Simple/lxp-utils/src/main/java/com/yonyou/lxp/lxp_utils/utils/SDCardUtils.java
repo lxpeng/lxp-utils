@@ -7,7 +7,6 @@ import android.os.Environment;
 import android.os.StatFs;
 
 /**
- * Created by liuxiaopeng on 16/1/31.
  * SD卡相关的辅助类
  */
 public class SDCardUtils {

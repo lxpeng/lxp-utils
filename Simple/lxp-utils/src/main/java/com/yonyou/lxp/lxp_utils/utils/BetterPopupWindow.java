@@ -17,8 +17,7 @@ import android.widget.PopupWindow;
 import com.lxp.lxp_utils.R;
 
 /**
- * 作者： liuxiaopeng on 16/7/1.
- * 描述：
+ * PopupWindow Base
  */
 
 public class BetterPopupWindow {
@@ -134,7 +133,7 @@ public class BetterPopupWindow {
     /**
      * Will inflate and set the view from a resource id
      *
-     * @param layoutResID
+     * @param layoutResID 布局ID
      */
     public void setContentView(int layoutResID) {
         LayoutInflater inflator =
@@ -146,7 +145,7 @@ public class BetterPopupWindow {
      * If you want to do anything when {@link} is called
      * PopupWindow取消监听
      *
-     * @param listener
+     * @param listener 关闭时回调
      */
     public void setOnDismissListener(PopupWindow.OnDismissListener listener) {
         this.window.setOnDismissListener(listener);
