@@ -1,8 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.neenbedankt.android-apt'
 
-version = "0.0.9"
+version = "0.1.0"
 
 def siteUrl = 'https://github.com/openproject/LessCode'
 def gitUrl = 'https://github.com/openproject/LessCode.git'
@@ -23,6 +24,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://jitpack.io" }
+    }
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
 }
 
 dependencies {
@@ -30,10 +42,24 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'com.android.support:design:24.0.0'
-
+    //弹框
     compile 'me.drakeet.materialdialog:library:1.3.1'
+    //沉浸式状态栏
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+    //下拉刷新下拉加载更多
+    compile 'com.github.orangegangsters:swipy:1.2.3@aar'
 
+    //注解控件
+    compile 'com.jakewharton:butterknife:8.0.1'
+    apt 'com.jakewharton:butterknife-compiler:8.0.1'
+    //网络请求
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:converter-scalars:2.1.0'
+    //RX系列
+    compile 'io.reactivex:rxjava:1.1.6'
+    compile 'io.reactivex:rxandroid:1.2.1'
 }
 
 
@@ -44,7 +70,8 @@ install {
         pom {
             project {
                 packaging 'aar'
-                name 'lxp-utils For Android'                                   // #CONFIG# // project title
+                name 'lxp-utils For Android'
+                // #CONFIG# // project title
                 url siteUrl
                 // Set your license
                 licenses {
@@ -55,9 +82,12 @@ install {
                 }
                 developers {
                     developer {
-                        id 'lxpeng'                                           // #CONFIG# // your user id (you can write your nickname)
-                        name 'lxpeng'                                       // #CONFIG# // your user name
-                        email '137708871@qq.com'                               // #CONFIG# // your email
+                        id 'lxpeng'
+                        // #CONFIG# // your user id (you can write your nickname)
+                        name 'lxpeng'
+                        // #CONFIG# // your user name
+                        email '137708871@qq.com'
+                        // #CONFIG# // your email
                     }
                 }
                 scm {
@@ -100,7 +130,8 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = "maven"
-        name = "lxp-utils"                                                 // #CONFIG# project name in jcenter
+        name = "lxp-utils"
+        // #CONFIG# project name in jcenter
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         licenses = ["Apache-2.0"]
