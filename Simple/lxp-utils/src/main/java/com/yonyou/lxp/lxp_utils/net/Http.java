@@ -21,7 +21,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * 作者： liuxiaopeng on 16/6/28.
- * 描述：
+ * 描述：网络请求
  */
 
 public class Http {
@@ -90,10 +90,75 @@ public class Http {
     }
 
     /**
+     * POST  BODY 请求
+     *
+     * @param url      url
+     * @param callBack 回调
+     * @param body     多个body
+     * @return
+     */
+    public Call<String> postBody(String url, final HttpCallBack callBack, String... body) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(HTTP_DOMAIN_NAME)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
+        HttpService service = retrofit.create(HttpService.class);
+        Call<String> call = service.sendPostBody(url, body);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.d("Http.onResponse", call.request().url().toString() + "\n" + response.body());
+                HashMap<String, Object> mapData = new HashMap<>();
+                callBack.isSuccess(response.body(), null);
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("Http.onResponse", call.request().url().toString() + "\n" + t.getMessage());
+                callBack.onFailure(call, t);
+            }
+        });
+
+        return call;
+    }
+
+    /**
+     * get 请求
+     *
+     * @param url      url
+     * @param callBack 回调
+     * @return
+     */
+    public Call<String> get(String url, final HttpCallBack callBack) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(HTTP_DOMAIN_NAME)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
+        HttpService service = retrofit.create(HttpService.class);
+        Call<String> call = service.sendGet(url, map);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.d("Http.onResponse", call.request().url().toString() + "\n" + response.body());
+                HashMap<String, Object> mapData = new HashMap<>();
+                callBack.isSuccess(response.body(), null);
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("Http.onResponse", call.request().url().toString() + "\n" + t.getMessage());
+                callBack.onFailure(call, t);
+            }
+        });
+
+        return call;
+    }
+
+    /**
      * 增加一个参数
      *
-     * @param key
-     * @param value
+     * @param key   stringKey
+     * @param value 数值
      */
     public void addParams(String key, Object value) {
         map.put(key, value);
@@ -118,12 +183,22 @@ public class Http {
     }
 
 
-
+    /**
+     * 获取Body的JsonStr
+     * @param obj Body
+     * @return Json字符串
+     */
+    public String getBodyJsonStr(Object obj) {
+        if (obj != null) {
+            return gson.toJson(obj);
+        }
+        return "";
+    }
 
 
     /**
-     * @param jsonData
-     * @param clazzMap
+     * @param jsonData jsonString数据
+     * @param clazzMap 解析后的map
      * @return
      */
     public static Map<String, Object> getDataMap(String jsonData, Map<String, Type> clazzMap) {
