@@ -1,9 +1,12 @@
 package com.yonyou.lxp.lxp_utils.net;
 
 
+import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.View;
 
 import com.google.gson.Gson;
+import com.yonyou.lxp.lxp_utils.utils.AppUtils;
 import com.yonyou.lxp.lxp_utils.utils.JsonUtils;
 
 import org.json.JSONException;
@@ -27,8 +30,13 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class Http {
     private HashMap<String, Object> map = new HashMap<String, Object>();
     private static Gson gson = new Gson();
-    private static final String HTTP_DOMAIN_NAME = "https://carapptest.gtmc.com.cn/";
+    private String HTTP_DOMAIN_NAME = "";
 
+    public void setHTTP_DOMAIN_NAME(String HTTP_DOMAIN_NAME) {
+        this.HTTP_DOMAIN_NAME = HTTP_DOMAIN_NAME;
+    }
+
+    private static final String TAG="Http";
     /**
      * @param url      要请求的方法
      * @param clazzMap 需要转化的实体类或List
@@ -36,6 +44,10 @@ public class Http {
      * @return 返回字符串及转化的数据 如果传入clazzMap为null 返回的mapData也为null
      */
     public Call<String> post(String url, final Map<String, Type> clazzMap, final HttpCallBack callBack) {
+        if (null == HTTP_DOMAIN_NAME || HTTP_DOMAIN_NAME.equals("")) {
+            Log.e(TAG,"请配置HTTP_DOMAIN_NAME,通过setHTTP_DOMAIN_NAME配置");
+        }
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(HTTP_DOMAIN_NAME)
 //                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -185,6 +197,7 @@ public class Http {
 
     /**
      * 获取Body的JsonStr
+     *
      * @param obj Body
      * @return Json字符串
      */
