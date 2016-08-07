@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 import com.yonyou.lxp.lxp_utils.utils.AppUtils;
 import com.yonyou.lxp.lxp_utils.utils.JsonUtils;
 
@@ -45,7 +46,7 @@ public class Http {
      */
     public Call<String> post(String url, final Map<String, Type> clazzMap, final HttpCallBack callBack) {
         if (null == HTTP_DOMAIN_NAME || HTTP_DOMAIN_NAME.equals("")) {
-            Log.e(TAG,"请配置HTTP_DOMAIN_NAME,通过setHTTP_DOMAIN_NAME配置");
+            Logger.e(TAG,"请配置HTTP_DOMAIN_NAME,通过setHTTP_DOMAIN_NAME配置");
         }
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -72,7 +73,8 @@ public class Http {
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.d("Http.onResponse", call.request().url().toString() + "\n" + response.body());
+                Logger.d("网络请求成功:\n "+call.request().url().toString());
+                Logger.json(response.body());
                 HashMap<String, Object> mapData = new HashMap<>();
                 if (clazzMap != null && clazzMap.keySet().size() > 0) {
                     for (String key : clazzMap.keySet()) {
@@ -93,7 +95,7 @@ public class Http {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.e("Http.onResponse", call.request().url().toString() + "\n" + t.getMessage());
+                Logger.e(t,"网络请求失败:\n "+call.request().url().toString());
                 callBack.onFailure(call, t);
             }
         });
@@ -119,14 +121,15 @@ public class Http {
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.d("Http.onResponse", call.request().url().toString() + "\n" + response.body());
+                Logger.d("网络请求成功:\n "+call.request().url().toString());
+                Logger.json(response.body());
                 HashMap<String, Object> mapData = new HashMap<>();
                 callBack.isSuccess(response.body(), null);
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.e("Http.onResponse", call.request().url().toString() + "\n" + t.getMessage());
+                Logger.e(t,"网络请求失败:\n "+call.request().url().toString());
                 callBack.onFailure(call, t);
             }
         });
@@ -151,14 +154,15 @@ public class Http {
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.d("Http.onResponse", call.request().url().toString() + "\n" + response.body());
+                Logger.d("网络请求成功:\n "+call.request().url().toString());
+                Logger.json(response.body());
                 HashMap<String, Object> mapData = new HashMap<>();
                 callBack.isSuccess(response.body(), null);
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.e("Http.onResponse", call.request().url().toString() + "\n" + t.getMessage());
+                Logger.e(t,"网络请求失败:\n "+call.request().url().toString());
                 callBack.onFailure(call, t);
             }
         });

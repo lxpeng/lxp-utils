@@ -3,7 +3,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.neenbedankt.android-apt'
 
-version = "0.1.1"
+version = "0.1.8"
 
 def siteUrl = 'https://github.com/openproject/LessCode'
 def gitUrl = 'https://github.com/openproject/LessCode.git'
@@ -26,6 +26,7 @@ android {
     }
 
 }
+
 
 buildscript {
     repositories {
@@ -62,6 +63,8 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.2.1'
     //图片加载 依赖v4包
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    //日志框架
+    compile 'com.orhanobut:logger:1.15'
 }
 
 

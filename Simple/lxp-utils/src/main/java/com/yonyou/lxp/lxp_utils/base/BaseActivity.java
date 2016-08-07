@@ -28,7 +28,6 @@ import butterknife.ButterKnife;
 
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
     public BaseActivity mContext;
-    public static Snackbar snackbar;
 
     /**
      * 是否沉浸状态栏
@@ -235,12 +234,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      * @param msg
      */
     public void showToast(String msg) {
-        if (snackbar == null) {
-            snackbar = Snackbar.make(mContextView, msg, Snackbar.LENGTH_SHORT);
-        } else {
-            snackbar.setText(msg);
-        }
-        snackbar.show();
+        Snackbar.make(mContextView, msg, Snackbar.LENGTH_SHORT).show();
     }
 
 

@@ -4,12 +4,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.yonyou.lxp.lxp_utils.listener.NoDoubleClickListener;
 
 
 /**
@@ -17,10 +19,10 @@ import com.bumptech.glide.Glide;
  */
 public class ViewHolder extends RecyclerView.ViewHolder {
     private final SparseArray<View> mViews;
-    public static View mConvertView;
+    private static View mConvertView;
     private Context mContext;
 
-    private ViewHolder(Context context, ViewGroup parent, int layoutId, View v) {
+    public ViewHolder(Context context, View v) {
         super(v);
         this.mViews = new SparseArray<View>();
         // setTag
@@ -37,14 +39,14 @@ public class ViewHolder extends RecyclerView.ViewHolder {
      * @param layoutId
      * @return
      */
-    public static ViewHolder get(Context context, View convertView, ViewGroup parent, int layoutId) {
-        if (mConvertView == null) {
-            mConvertView = convertView;
-            return new ViewHolder(context, parent, layoutId, mConvertView);
-        } else {
-            return (ViewHolder) convertView.getTag();
+    public static   ViewHolder get(Context context, View convertView, ViewGroup parent, int layoutId) {
+        if (convertView == null) {
+            mConvertView = LayoutInflater.from(context).inflate(layoutId, parent, false);
+            return new ViewHolder(context, mConvertView);
         }
+        return (ViewHolder) convertView.getTag();
     }
+
 
     public View getConvertView() {
         return mConvertView;
@@ -158,16 +160,16 @@ public class ViewHolder extends RecyclerView.ViewHolder {
      */
     public void setOnlick(int viewId, final OnClick myOnClick) {
         View view = getView(viewId);
-        view.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 myOnClick.OnClick();
             }
         });
     }
 
+
     public interface OnClick {
         public void OnClick();
     }
-
 }

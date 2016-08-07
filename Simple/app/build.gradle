@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion 23
@@ -26,4 +28,5 @@ dependencies {
     compile 'com.lxp:lxp-utils:0.0.2'
 
     compile project(':lxp-utils')
+    apt 'com.jakewharton:butterknife-compiler:8.0.1'
 }
