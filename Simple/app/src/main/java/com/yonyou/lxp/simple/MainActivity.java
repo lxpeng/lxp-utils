@@ -8,16 +8,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
 import com.yonyou.lxp.lxp_utils.adapter.CommonAdapter;
 import com.yonyou.lxp.lxp_utils.adapter.ViewHolder;
 import com.yonyou.lxp.lxp_utils.base.BaseActivity;
+import com.yonyou.lxp.lxp_utils.net.Http;
 import com.yonyou.lxp.simple.contract.MainContract;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
 
 public class MainActivity extends BaseActivity implements MainContract.IMianView {
 
@@ -73,9 +79,28 @@ public class MainActivity extends BaseActivity implements MainContract.IMianView
         rv.setAdapter(adapter);
     }
 
+    public static  String JOKE_URL="http://v.juhe.cn/";
+    public static  String JOKE_URL_RAND="joke/randJoke.php";
+    public static  String HTTP_URL_NEWS="toutiao/index";
+    public static  String JUHE_JOKE_KEY="246c3f91174a8e0dec575fc56da75adf";
     @Override
     public void doBusiness() {
+        Http<Bean> http=new Http();
+        http.clearParameter();
+        http.setHTTP_DOMAIN_NAME(JOKE_URL);
+        http.addParams("key",JUHE_JOKE_KEY);
 
+        http.postRx(JOKE_URL_RAND, new Http.HttpCallRxBack<Bean>() {
+            @Override
+            public void isSuccess(Bean backInfo) {
+                Logger.e(backInfo.toString());
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Logger.e(t,"cuowu");
+            }
+        });
     }
 
     @Override

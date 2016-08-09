@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
+import com.yonyou.lxp.lxp_utils.Bean;
 import com.yonyou.lxp.lxp_utils.utils.AppUtils;
 import com.yonyou.lxp.lxp_utils.utils.JsonUtils;
 
@@ -17,12 +18,19 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action2;
+import rx.schedulers.Schedulers;
 
 /**
  * 作者： liuxiaopeng on 16/6/28.
@@ -38,7 +46,8 @@ public class Http {
         this.HTTP_DOMAIN_NAME = HTTP_DOMAIN_NAME;
     }
 
-    private static final String TAG="Http";
+    private static final String TAG = "Http";
+
     /**
      * @param url      要请求的方法
      * @param clazzMap 需要转化的实体类或List
@@ -46,36 +55,13 @@ public class Http {
      * @return 返回字符串及转化的数据 如果传入clazzMap为null 返回的mapData也为null
      */
     public Call<String> post(String url, final Map<String, Type> clazzMap, final HttpCallBack callBack) {
-        if (null == HTTP_DOMAIN_NAME || HTTP_DOMAIN_NAME.equals("")) {
-            Logger.e(TAG,"请配置HTTP_DOMAIN_NAME,通过setHTTP_DOMAIN_NAME配置");
-        }
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(HTTP_DOMAIN_NAME)
-//                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .build();
-
+        Retrofit retrofit = getRetrofit();
         HttpService service = retrofit.create(HttpService.class);
-
-//        Subscription sub = service.sendPost(url, map)
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnNext(s -> Log.d("httpJsonData", s))
-//                .doOnNext(s -> {
-//                    if (!isSuccess(s)) {
-//                        Log.e("httpJsonData", getJsonStr(s, "errMsg"));
-//                    }
-//                })
-//                .filter(s -> isSuccess(s))
-//                .subscribe(s ->getDataMap(s,clazzMap),throwable -> Log.e("网络错误",throwable.getMessage()));
-
-
         Call<String> call = service.sendPost(url, map);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Logger.d("网络请求成功:\n "+call.request().url().toString());
+                Logger.d("网络请求成功:\n " + call.request().url().toString());
                 Logger.json(response.body());
                 HashMap<String, Object> mapData = new HashMap<>();
                 if (clazzMap != null && clazzMap.keySet().size() > 0) {
@@ -97,7 +83,7 @@ public class Http {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Logger.e(t,"网络请求失败:\n "+call.request().url().toString());
+                Logger.e(t, "网络请求失败:\n " + call.request().url().toString());
                 callBack.onFailure(call, t);
             }
         });
@@ -114,16 +100,13 @@ public class Http {
      * @return
      */
     public Call<String> postBody(String url, final HttpCallBack callBack, String... body) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(HTTP_DOMAIN_NAME)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .build();
+        Retrofit retrofit = getRetrofit();
         HttpService service = retrofit.create(HttpService.class);
         Call<String> call = service.sendPostBody(url, body);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Logger.d("网络请求成功:\n "+call.request().url().toString());
+                Logger.d("网络请求成功:\n " + call.request().url().toString());
                 Logger.json(response.body());
                 HashMap<String, Object> mapData = new HashMap<>();
                 callBack.isSuccess(response.body(), null);
@@ -131,7 +114,7 @@ public class Http {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Logger.e(t,"网络请求失败:\n "+call.request().url().toString());
+                Logger.e(t, "网络请求失败:\n " + call.request().url().toString());
                 callBack.onFailure(call, t);
             }
         });
@@ -147,16 +130,13 @@ public class Http {
      * @return
      */
     public Call<String> get(String url, final HttpCallBack callBack) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(HTTP_DOMAIN_NAME)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .build();
+        Retrofit retrofit = getRetrofit();
         HttpService service = retrofit.create(HttpService.class);
         Call<String> call = service.sendGet(url, map);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Logger.d("网络请求成功:\n "+call.request().url().toString());
+                Logger.d("网络请求成功:\n " + call.request().url().toString());
                 Logger.json(response.body());
                 HashMap<String, Object> mapData = new HashMap<>();
                 callBack.isSuccess(response.body(), null);
@@ -164,12 +144,28 @@ public class Http {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Logger.e(t,"网络请求失败:\n "+call.request().url().toString());
+                Logger.e(t, "网络请求失败:\n " + call.request().url().toString());
                 callBack.onFailure(call, t);
             }
         });
 
         return call;
+    }
+
+    /**
+     * 获取Retrofit实例
+     *
+     * @return 获取Retrofit实例
+     */
+    private Retrofit getRetrofit() {
+        if (null == HTTP_DOMAIN_NAME || HTTP_DOMAIN_NAME.equals("")) {
+            Logger.e(TAG, "请配置HTTP_DOMAIN_NAME,通过setHTTP_DOMAIN_NAME配置");
+        }
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(HTTP_DOMAIN_NAME)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
+        return retrofit;
     }
 
     /**
@@ -198,6 +194,15 @@ public class Http {
 
         void onFailure(Call<String> call, Throwable t);
 
+    }
+
+    /**
+     * 回调接口
+     */
+    public interface HttpCallRxBack<T> {
+        void isSuccess(T backInfo);
+
+        void onFailure(Throwable t);
     }
 
 
