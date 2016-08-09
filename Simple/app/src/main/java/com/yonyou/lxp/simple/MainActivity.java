@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import com.yonyou.lxp.lxp_utils.adapter.CommonAdapter;
 import com.yonyou.lxp.lxp_utils.adapter.ViewHolder;
+import com.yonyou.lxp.lxp_utils.base.BaseActivity;
+import com.yonyou.lxp.simple.contract.MainContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity implements MainContract.IMianView {
 
     @BindView(R.id.rv)
     RecyclerView rv;
@@ -25,32 +27,28 @@ public class MainActivity extends AppCompatActivity {
     private CommonAdapter<String> adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-//        ImageView imageView= (ImageView) findViewById(R.id.image);
-//        Glide.with(this).load("http://pic25.nipic.com/20121112/5955207_224247025000_2.jpg").into(imageView);
+    public void widgetClick(View v) {
 
-
-//        Http http=new Http();
-//        http.post("", null, new Http.HttpCallBack() {
-//            @Override
-//            public void isSuccess(String data, Map<String, Object> mapData) {
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<String> call, Throwable t) {
-//
-//            }
-//        });
-
-        initView();
     }
 
 
-    private void initView() {
+    @Override
+    public void initParms(Bundle parms) {
+
+    }
+
+    @Override
+    public View bindView() {
+        return null;
+    }
+
+    @Override
+    public int bindLayout() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    public void initView(View view) {
 
         List list=new ArrayList();
         for (int i = 0; i < 100; i++) {
@@ -66,15 +64,22 @@ public class MainActivity extends AppCompatActivity {
         adapter.setmOnItemClickListener(new CommonAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(Object item, int position) {
-            Log.e("11111",item+"");
-            Toast.makeText(MainActivity.this,item+"",Toast.LENGTH_SHORT).show();
+                Log.e("11111",item+"");
+                Toast.makeText(MainActivity.this,item+"",Toast.LENGTH_SHORT).show();
 //            }
-        }
+            }
         });
-
-//
-
         rv.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         rv.setAdapter(adapter);
+    }
+
+    @Override
+    public void doBusiness() {
+
+    }
+
+    @Override
+    public void refreshError(String error) {
+
     }
 }

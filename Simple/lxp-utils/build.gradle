@@ -3,7 +3,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.neenbedankt.android-apt'
 
-version = "0.1.8"
+version = "0.1.9"
 
 def siteUrl = 'https://github.com/openproject/LessCode'
 def gitUrl = 'https://github.com/openproject/LessCode.git'

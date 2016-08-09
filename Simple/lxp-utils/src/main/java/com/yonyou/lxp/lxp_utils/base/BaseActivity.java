@@ -15,11 +15,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
 import com.yonyou.lxp.lxp_utils.utils.StatusBarUtil;
 
 import java.util.Calendar;
 
 import butterknife.ButterKnife;
+import rx.Subscription;
 
 /**
  * 作者： liuxiaopeng on 16/6/28.
@@ -28,7 +30,7 @@ import butterknife.ButterKnife;
 
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
     public BaseActivity mContext;
-
+    protected Subscription subscription;
     /**
      * 是否沉浸状态栏
      **/
@@ -274,4 +276,19 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         this.isSetStatusBarTextColor = isSetStatusBarTextColor;
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unsubscribe();
+    }
+
+    /**
+     * 取消订阅RxJava
+     */
+    protected void unsubscribe() {
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
+    }
 }
