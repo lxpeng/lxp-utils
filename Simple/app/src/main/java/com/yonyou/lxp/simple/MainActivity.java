@@ -8,11 +8,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
 import com.orhanobut.logger.Logger;
 import com.yonyou.lxp.lxp_utils.adapter.CommonAdapter;
 import com.yonyou.lxp.lxp_utils.adapter.ViewHolder;
 import com.yonyou.lxp.lxp_utils.base.BaseActivity;
 import com.yonyou.lxp.lxp_utils.net.Http;
+import com.yonyou.lxp.lxp_utils.net.ParamsMap;
+import com.yonyou.lxp.lxp_utils.net.ResponseMap;
 import com.yonyou.lxp.simple.contract.MainContract;
 
 import java.lang.reflect.Type;
@@ -37,7 +40,6 @@ public class MainActivity extends BaseActivity implements MainContract.IMianView
 
     }
 
-
     @Override
     public void initParms(Bundle parms) {
 
@@ -56,22 +58,22 @@ public class MainActivity extends BaseActivity implements MainContract.IMianView
     @Override
     public void initView(View view) {
 
-        List list=new ArrayList();
+        List list = new ArrayList();
         for (int i = 0; i < 100; i++) {
-            list.add(i+"============");
+            list.add(i + "============");
         }
 
-        adapter=new CommonAdapter<String>(this,list,android.R.layout.simple_list_item_1) {
+        adapter = new CommonAdapter<String>(this, list, android.R.layout.simple_list_item_1) {
             @Override
             public void convert(ViewHolder helper, String item, int position) {
-                helper.setText(android.R.id.text1,item);
+                helper.setText(android.R.id.text1, item);
             }
         };
         adapter.setmOnItemClickListener(new CommonAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(Object item, int position) {
-                Log.e("11111",item+"");
-                Toast.makeText(MainActivity.this,item+"",Toast.LENGTH_SHORT).show();
+                Log.e("11111", item + "");
+                Toast.makeText(MainActivity.this, item + "", Toast.LENGTH_SHORT).show();
 //            }
             }
         });
@@ -79,28 +81,28 @@ public class MainActivity extends BaseActivity implements MainContract.IMianView
         rv.setAdapter(adapter);
     }
 
-    public static  String JOKE_URL="http://v.juhe.cn/";
-    public static  String JOKE_URL_RAND="joke/randJoke.php";
-    public static  String HTTP_URL_NEWS="toutiao/index";
-    public static  String JUHE_JOKE_KEY="246c3f91174a8e0dec575fc56da75adf";
+    public static String JOKE_URL = "http://v.juhe.cn/";
+    public static String JOKE_URL_RAND = "joke/randJoke.php";
+    public static String HTTP_URL_NEWS = "toutiao/index";
+    public static String JUHE_JOKE_KEY = "246c3f91174a8e0dec575fc56da75adf";
+
     @Override
     public void doBusiness() {
-        Http<Bean> http=new Http();
-        http.clearParameter();
-        http.setHTTP_DOMAIN_NAME(JOKE_URL);
-        http.addParams("key",JUHE_JOKE_KEY);
 
-        http.postRx(JOKE_URL_RAND, new Http.HttpCallRxBack<Bean>() {
-            @Override
-            public void isSuccess(Bean backInfo) {
-                Logger.e(backInfo.toString());
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Logger.e(t,"cuowu");
-            }
-        });
+//        ParamsMap paramsMap = new ParamsMap(JOKE_URL, JOKE_URL_RAND)
+//                .put("key", JUHE_JOKE_KEY);
+////        ResponseMap responseMap=new ResponseMap().putData()
+//        Http.post(paramsMap, null, new Http.HttpCallBack() {
+//            @Override
+//            public void isSuccess(String data, Map<String, Object> mapData) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<String> call, Throwable t) {
+//
+//            }
+//        });
     }
 
     @Override

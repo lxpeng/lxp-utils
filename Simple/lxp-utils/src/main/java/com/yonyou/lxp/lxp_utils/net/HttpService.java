@@ -1,6 +1,5 @@
 package com.yonyou.lxp.lxp_utils.net;
 
-import com.yonyou.lxp.lxp_utils.Bean;
 
 import java.util.Map;
 

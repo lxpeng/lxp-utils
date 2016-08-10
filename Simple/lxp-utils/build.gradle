@@ -4,7 +4,7 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'//retrolambda
 
-version = "0.1.9"
+version = "0.2.0"
 
 def siteUrl = 'https://github.com/openproject/LessCode'
 def gitUrl = 'https://github.com/openproject/LessCode.git'

@@ -1,36 +1,18 @@
 package com.yonyou.lxp.lxp_utils.net;
 
-
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
-
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
-import com.yonyou.lxp.lxp_utils.Bean;
-import com.yonyou.lxp.lxp_utils.utils.AppUtils;
 import com.yonyou.lxp.lxp_utils.utils.JsonUtils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action2;
-import rx.schedulers.Schedulers;
 
 /**
  * 作者： liuxiaopeng on 16/6/28.
@@ -38,26 +20,23 @@ import rx.schedulers.Schedulers;
  */
 
 public class Http {
-    private HashMap<String, Object> map = new HashMap<String, Object>();
-    private static Gson gson = new Gson();
-    private String HTTP_DOMAIN_NAME = "";
 
-    public void setHTTP_DOMAIN_NAME(String HTTP_DOMAIN_NAME) {
-        this.HTTP_DOMAIN_NAME = HTTP_DOMAIN_NAME;
-    }
+    private static Gson gson = new Gson();
+    private static String HTTP_DOMAIN_NAME = "";
+    private static String HTTP_URL = "";
 
     private static final String TAG = "Http";
 
     /**
-     * @param url      要请求的方法
-     * @param clazzMap 需要转化的实体类或List
-     * @param callBack 回调函数
+     * @param paramsMap 参数 必传 HTTP_URL 及 HTTP_DOMAIN_NAME
+     * @param clazzMap  需要转化的实体类或List
+     * @param callBack  回调函数
      * @return 返回字符串及转化的数据 如果传入clazzMap为null 返回的mapData也为null
      */
-    public Call<String> post(String url, final Map<String, Type> clazzMap, final HttpCallBack callBack) {
-        Retrofit retrofit = getRetrofit();
+    public static Call<String> post(ParamsMap paramsMap, final Map<String, Type> clazzMap, final HttpCallBack callBack) {
+        Retrofit retrofit = getRetrofit(paramsMap);
         HttpService service = retrofit.create(HttpService.class);
-        Call<String> call = service.sendPost(url, map);
+        Call<String> call = service.sendPost(HTTP_URL, paramsMap);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -87,22 +66,21 @@ public class Http {
                 callBack.onFailure(call, t);
             }
         });
-
         return call;
     }
 
     /**
      * POST  BODY 请求
      *
-     * @param url      url
-     * @param callBack 回调
-     * @param body     多个body
-     * @return
+     * @param paramsMap 参数 必传 HTTP_URL 及 HTTP_DOMAIN_NAME
+     * @param callBack  回调
+     * @param body      多个body
+     * @return 返回Call
      */
-    public Call<String> postBody(String url, final HttpCallBack callBack, String... body) {
-        Retrofit retrofit = getRetrofit();
+    public static Call<String> postBody(ParamsMap paramsMap, final HttpCallBack callBack, String... body) {
+        Retrofit retrofit = getRetrofit(paramsMap);
         HttpService service = retrofit.create(HttpService.class);
-        Call<String> call = service.sendPostBody(url, body);
+        Call<String> call = service.sendPostBody(HTTP_URL, body);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -123,16 +101,16 @@ public class Http {
     }
 
     /**
-     * get 请求
+     * get请求 参数 必传 HTTP_URL 及 HTTP_DOMAIN_NAME
      *
-     * @param url      url
-     * @param callBack 回调
-     * @return
+     * @param paramsMap 参数
+     * @param callBack  回调
+     * @return CALL
      */
-    public Call<String> get(String url, final HttpCallBack callBack) {
-        Retrofit retrofit = getRetrofit();
+    public static Call<String> get(ParamsMap paramsMap, final HttpCallBack callBack) {
+        Retrofit retrofit = getRetrofit(paramsMap);
         HttpService service = retrofit.create(HttpService.class);
-        Call<String> call = service.sendGet(url, map);
+        Call<String> call = service.sendGet(HTTP_URL, paramsMap);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -157,34 +135,25 @@ public class Http {
      *
      * @return 获取Retrofit实例
      */
-    private Retrofit getRetrofit() {
-        if (null == HTTP_DOMAIN_NAME || HTTP_DOMAIN_NAME.equals("")) {
-            Logger.e(TAG, "请配置HTTP_DOMAIN_NAME,通过setHTTP_DOMAIN_NAME配置");
+    private static Retrofit getRetrofit(ParamsMap paramsMap) {
+        HTTP_URL = paramsMap.getHTTP_URL();
+        HTTP_DOMAIN_NAME = paramsMap.getHTTP_DOMAIN_NAME();
+
+        if (null == HTTP_DOMAIN_NAME || "".equals(HTTP_DOMAIN_NAME)) {
+            Logger.e("请配置域名地址");
+            return null;
         }
+        if (null == HTTP_URL || "".equals(HTTP_URL)) {
+            Logger.e("请配置访问Action");
+            return null;
+        }
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(HTTP_DOMAIN_NAME)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
         return retrofit;
     }
-
-    /**
-     * 增加一个参数
-     *
-     * @param key   stringKey
-     * @param value 数值
-     */
-    public void addParams(String key, Object value) {
-        map.put(key, value);
-    }
-
-    /**
-     * 每次新的请求前,请务必执行此方法,再添加参数啊
-     */
-    public void clearParameter() {
-        map.clear();
-    }
-
 
     /**
      * 回调接口
@@ -197,22 +166,12 @@ public class Http {
     }
 
     /**
-     * 回调接口
-     */
-    public interface HttpCallRxBack<T> {
-        void isSuccess(T backInfo);
-
-        void onFailure(Throwable t);
-    }
-
-
-    /**
      * 获取Body的JsonStr
      *
      * @param obj Body
      * @return Json字符串
      */
-    public String getBodyJsonStr(Object obj) {
+    public static String getBodyJsonStr(Object obj) {
         if (obj != null) {
             return gson.toJson(obj);
         }
