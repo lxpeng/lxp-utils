@@ -13,15 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
-import com.orhanobut.logger.Logger;
 import com.yonyou.lxp.lxp_utils.utils.StatusBarUtil;
 
 import java.util.Calendar;
 
 import butterknife.ButterKnife;
 import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者： liuxiaopeng on 16/6/28.
@@ -30,7 +29,6 @@ import rx.Subscription;
 
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
     public BaseActivity mContext;
-    protected Subscription subscription;
     /**
      * 是否沉浸状态栏
      **/
@@ -65,6 +63,10 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      **/
     public abstract void widgetClick(View v);
 
+    /**
+     * 用来保存取消Subscription 用以取消订阅
+     */
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -287,8 +289,17 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      * 取消订阅RxJava
      */
     protected void unsubscribe() {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
+        if (null != compositeSubscription)
+            compositeSubscription.unsubscribe();
+    }
+
+    /**
+     * 添加RxJava订阅
+     *
+     * @param subscription
+     */
+    public void addSubscribe(Subscription subscription) {
+        if (null != compositeSubscription)
+            compositeSubscription.add(subscription);
     }
 }

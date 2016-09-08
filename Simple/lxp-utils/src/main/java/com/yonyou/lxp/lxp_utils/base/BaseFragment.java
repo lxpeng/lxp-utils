@@ -10,17 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
+import rx.Subscription;
 
 /**
  * 作者： liuxiaopeng on 16/8/5.
  * 描述：
  */
 
-public abstract class BaseFragment extends Fragment implements View.OnClickListener{
+public abstract class BaseFragment extends Fragment implements View.OnClickListener {
     public BaseActivity mContext;
-    public static Snackbar snackbar;
 
     public static final String ARG_PARAM1 = "param1";
     public static final String ARG_PARAM2 = "param2";
@@ -37,11 +39,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * 日志输出标志
      **/
     protected final String TAG = this.getClass().getSimpleName();
-
-    /**
-     * View点击
-     **/
-    public abstract void widgetClick(View v);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,6 +70,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         initView(mContextView);
         doBusiness();
     }
+
+    /**
+     * View点击
+     **/
+    public abstract void widgetClick(View v);
 
     /**
      * [初始化参数]
@@ -109,7 +111,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * @return
      */
     protected <T extends View> T $(int resId) {
-        if (null!=mContextView){
+        if (null != mContextView) {
             return (T) mContextView.findViewById(resId);
         }
         return null;
@@ -182,12 +184,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * @param msg
      */
     public void showToast(String msg) {
-        if (snackbar == null) {
-            snackbar = Snackbar.make(mContextView, msg, Snackbar.LENGTH_SHORT);
-        } else {
-            snackbar.setText(msg);
-        }
-        snackbar.show();
+        Snackbar.make(mContextView, msg, Snackbar.LENGTH_SHORT).show();
     }
 
 

@@ -4,10 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -145,12 +147,30 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
-
+    /**
+     *
+     * @param viewId
+     * @param id
+     * @return
+     */
     public ViewHolder setBackgroundResource(int viewId, int id) {
         View view = getView(viewId);
         view.setBackgroundResource(id);
         return this;
     }
+
+    /**
+     * 设置布局的 gravity
+     * @param viewId
+     * @param id Gravity.LEFT
+     * @return
+     */
+    public ViewHolder setLinearLayoutGravity(int viewId, int id) {
+        LinearLayout view = getView(viewId);
+        view.setGravity(id);
+        return this;
+    }
+
 
     /**
      * 点击事件
