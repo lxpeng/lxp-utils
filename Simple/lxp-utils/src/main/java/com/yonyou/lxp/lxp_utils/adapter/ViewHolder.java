@@ -1,23 +1,23 @@
 package com.yonyou.lxp.lxp_utils.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.yonyou.lxp.lxp_utils.listener.NoDoubleClickListener;
-
+import com.yonyou.lxp.lxp_utils.utils.AppUtils;
 
 /**
- * Created by Administrator on 2015/7/6.
+ * ViewHolder
  */
 public class ViewHolder extends RecyclerView.ViewHolder {
     private final SparseArray<View> mViews;
@@ -35,13 +35,13 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     /**
      * 拿到一个ViewHolder对象
      *
-     * @param context
-     * @param convertView
-     * @param parent
-     * @param layoutId
-     * @return
+     * @param context     上下文
+     * @param convertView 父控件
+     * @param parent      父控件
+     * @param layoutId    itemID
+     * @return ViewHolder
      */
-    public static   ViewHolder get(Context context, View convertView, ViewGroup parent, int layoutId) {
+    public static ViewHolder get(Context context, View convertView, ViewGroup parent, int layoutId) {
         if (convertView == null) {
             mConvertView = LayoutInflater.from(context).inflate(layoutId, parent, false);
             return new ViewHolder(context, mConvertView);
@@ -49,7 +49,11 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         return (ViewHolder) convertView.getTag();
     }
 
-
+    /**
+     * 获取父类View
+     *
+     * @return mConvertView
+     */
     public View getConvertView() {
         return mConvertView;
     }
@@ -57,8 +61,8 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     /**
      * 通过控件的Id获取对于的控件，如果没有则加入views
      *
-     * @param viewId
-     * @return
+     * @param viewId ID
+     * @return View
      */
     public <T extends View> T getView(int viewId) {
         View view = mViews.get(viewId);
@@ -72,9 +76,9 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     /**
      * 为TextView设置字符串
      *
-     * @param viewId
-     * @param text
-     * @return
+     * @param viewId TextViewID
+     * @param text   context
+     * @return ViewHolder
      */
     public ViewHolder setText(int viewId, String text) {
         TextView view = getView(viewId);
@@ -85,49 +89,92 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     /**
      * 为ImageView设置图片
      *
-     * @param viewId
-     * @param drawableId
-     * @return
+     * @param viewId     SimpleDraweeViewID
+     * @param drawableId drawableId
+     * @return ViewHolder
      */
     public ViewHolder setImageResource(int viewId, int drawableId) {
-        ImageView view = getView(viewId);
-        view.setImageResource(drawableId);
-
+        SimpleDraweeView view = getView(viewId);
+        Uri uri = Uri.parse("res://" + AppUtils.getPagerName(mContext) + "/" + drawableId);
+        view.setImageURI(uri);
         return this;
     }
 
-    /**
-     * 为ImageView设置图片
-     *
-     * @param viewId bm
-     * @return
-     */
-    public ViewHolder setImageBitmap(int viewId, Bitmap bm) {
-        ImageView view = getView(viewId);
-        view.setImageBitmap(bm);
-        return this;
-    }
+//    /**
+//     * 为ImageView设置图片
+//     *
+//     * @param viewId bm
+//     * @return
+//     */
+//    public ViewHolder setImageBitmap(int viewId, Bitmap bm) {
+//        SimpleDraweeView view = getView(viewId);
+//        Fresco.
+//        DraweeController draweeController =Fresco.newDraweeControllerBuilder().build();
+//        view.setController(draweeController);
+//        return this;
+//    }
 
     /**
      * 为ImageView设置图片
+     * 远程图片	http://, https://	HttpURLConnection 或者参考 使用其他网络加载方案
+     * 本地文件	file://	FileInputStream
+     * Content provider	content://	ContentResolver
+     * asset目录下的资源	asset://	AssetManager
+     * res目录下的资源	res://	Resources.openRawResource
      *
-     * @param viewId
-     * @param url
-     * @return
+     * @param viewId ID
+     * @param url    图片路径
+     * @return ViewHolder
      */
     public ViewHolder setImageByUrl(int viewId, String url) {
-        ImageView view = getView(viewId);
-        Glide.with(mContext).load(url).into(view);
+        SimpleDraweeView view = getView(viewId);
+        Uri uri = Uri.parse(url);
+        view.setImageURI(uri);
         return this;
     }
 
+    /**
+     * 为SimpleDraweeView设置图片
+     *
+     * @param viewId ViewId
+     * @param url    URL
+     * @return ViewHolder
+     */
+    public ViewHolder setImageGifByUrl(int viewId, String url) {
+        SimpleDraweeView view = getView(viewId);
+        Uri uri = Uri.parse(url);
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setUri(uri)
+                .setAutoPlayAnimations(true)
+                .build();
+        view.setController(controller);
+        return this;
+    }
+
+    /**
+     * 为SimpleDraweeView设置图片
+     *
+     * @param viewId     ViewId
+     * @param drawableId ResourceID
+     * @return ViewHolder
+     */
+    public ViewHolder setImageGifResource(int viewId, int drawableId) {
+        SimpleDraweeView view = getView(viewId);
+        Uri uri = Uri.parse("res://" + AppUtils.getPagerName(mContext) + "/" + drawableId);
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setUri(uri)
+                .setAutoPlayAnimations(true)
+                .build();
+        view.setController(controller);
+        return this;
+    }
 
     /**
      * 设置布局隐藏或显示
      *
-     * @param viewId
-     * @param GONE
-     * @return
+     * @param viewId ViewID
+     * @param GONE   显示隐藏
+     * @return ViewHolder
      */
     public ViewHolder setViewHide(int viewId, int GONE) {
         getView(viewId).setVisibility(GONE);
@@ -137,9 +184,9 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     /**
      * 设置字体颜色 textview
      *
-     * @param viewId
+     * @param viewId  TextViewID
      * @param colorid 颜色ID
-     * @return
+     * @return ViewHolder
      */
     public ViewHolder setTextColor(int viewId, int colorid) {
         TextView view = getView(viewId);
@@ -148,10 +195,9 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     *
-     * @param viewId
-     * @param id
-     * @return
+     * @param viewId ViewID
+     * @param id     资源ID
+     * @return ViewHolder
      */
     public ViewHolder setBackgroundResource(int viewId, int id) {
         View view = getView(viewId);
@@ -161,9 +207,10 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     /**
      * 设置布局的 gravity
-     * @param viewId
-     * @param id Gravity.LEFT
-     * @return
+     *
+     * @param viewId ID
+     * @param id     Gravity.LEFT
+     * @return ViewHolder
      */
     public ViewHolder setLinearLayoutGravity(int viewId, int id) {
         LinearLayout view = getView(viewId);
@@ -175,8 +222,8 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     /**
      * 点击事件
      *
-     * @param viewId
-     * @param myOnClick
+     * @param viewId    ViewID
+     * @param myOnClick 点击事件
      */
     public void setOnlick(int viewId, final OnClick myOnClick) {
         View view = getView(viewId);
@@ -188,7 +235,9 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-
+    /**
+     * 点击事件接口
+     */
     public interface OnClick {
         public void OnClick();
     }

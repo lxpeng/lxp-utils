@@ -2,6 +2,7 @@ package com.yonyou.lxp.lxp_utils.net;
 
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
+import com.yonyou.lxp.lxp_utils.utils.GsonUtils;
 import com.yonyou.lxp.lxp_utils.utils.JsonUtils;
 
 import java.lang.reflect.Type;
@@ -182,7 +183,7 @@ public class Http {
     /**
      * @param jsonData jsonString数据
      * @param clazzMap 解析后的map
-     * @return
+     * @return  Map<String, Object>
      */
     public static Map<String, Object> getDataMap(String jsonData, Map<String, Type> clazzMap) {
         HashMap<String, Object> mapData = new HashMap<>();

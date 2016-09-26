@@ -162,7 +162,7 @@ public class MainActivity extends BaseActivity implements MainContract.IMianView
         if (JsonUtils.isSuccess(jsonStrData, "code", "1")){
             getInfo(JsonUtils.getJsonStr(jsonStrData, "data"), User.class);
         }else {
-            showToast(mContext,"err");
+            showToast("err");
         }
 
 

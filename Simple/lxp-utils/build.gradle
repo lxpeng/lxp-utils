@@ -4,7 +4,7 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'//retrolambda
 
-version = "0.2.4"
+version = "0.2.9"
 
 def siteUrl = 'https://github.com/openproject/LessCode'
 def gitUrl = 'https://github.com/openproject/LessCode.git'
@@ -34,7 +34,14 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
-
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'x86_64', 'arm64-v8a', 'armeabi-v7a', 'armeabi'
+            universalApk false
+        }
+    }
     retrolambda {
         println("JAVA_HOME: " + System.getenv("JAVA_HOME"))
         println("JAVA7_HOME: " + System.getenv("JAVA7_HOME"))
@@ -57,8 +64,8 @@ buildscript {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'com.android.support:design:24.2.0'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
     //弹框
     compile 'me.drakeet.materialdialog:library:1.3.1'
     //沉浸式状态栏
@@ -77,10 +84,17 @@ dependencies {
     //RX系列
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'io.reactivex:rxandroid:1.2.1'
-    //图片加载 依赖v4包
-    compile 'com.github.bumptech.glide:glide:3.7.0'
     //日志框架
     compile 'com.orhanobut:logger:1.15'
+    //===========================================️fresco
+    // 其他依赖
+    compile 'com.facebook.fresco:fresco:0.12.0'
+    // 支持 GIF 动图，需要添加
+    compile 'com.facebook.fresco:animated-gif:0.12.0'
+    // 支持 WebP （静态图+动图），需要添加
+    compile 'com.facebook.fresco:animated-webp:0.12.0'
+    compile 'com.facebook.fresco:webpsupport:0.12.0'
+    //============================================️fresco
 }
 
 
@@ -131,6 +145,7 @@ task sourcesJar(type: Jar) {
 task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    failOnError false
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
