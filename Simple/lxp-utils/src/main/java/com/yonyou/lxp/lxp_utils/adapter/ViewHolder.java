@@ -15,6 +15,7 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.yonyou.lxp.lxp_utils.listener.NoDoubleClickListener;
 import com.yonyou.lxp.lxp_utils.utils.AppUtils;
+import com.yonyou.lxp.lxp_utils.view.FrescoImageView;
 
 /**
  * ViewHolder
@@ -141,13 +142,13 @@ public class ViewHolder extends RecyclerView.ViewHolder {
      * @return ViewHolder
      */
     public ViewHolder setImageGifByUrl(int viewId, String url) {
-        SimpleDraweeView view = getView(viewId);
+        FrescoImageView view = getView(viewId);
         Uri uri = Uri.parse(url);
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setUri(uri)
                 .setAutoPlayAnimations(true)
                 .build();
-        view.setController(controller);
+        view.setImageGifURI(uri,controller);
         return this;
     }
 
@@ -159,13 +160,13 @@ public class ViewHolder extends RecyclerView.ViewHolder {
      * @return ViewHolder
      */
     public ViewHolder setImageGifResource(int viewId, int drawableId) {
-        SimpleDraweeView view = getView(viewId);
+        FrescoImageView view = getView(viewId);
         Uri uri = Uri.parse("res://" + AppUtils.getPagerName(mContext) + "/" + drawableId);
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setUri(uri)
                 .setAutoPlayAnimations(true)
                 .build();
-        view.setController(controller);
+        view.setImageGifURI(uri,controller);
         return this;
     }
 

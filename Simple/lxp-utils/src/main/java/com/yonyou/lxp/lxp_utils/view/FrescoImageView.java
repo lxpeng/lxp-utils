@@ -67,6 +67,18 @@ public class FrescoImageView extends SimpleDraweeView {
         setController(controller);
     }
 
+    public void setImageGifURI(Uri uri, Object callerContext) {
+        DraweeController controller = ((PipelineDraweeControllerBuilder)getControllerBuilder())
+                .setControllerListener(listener)
+                .setCallerContext(callerContext)
+                .setUri(uri)
+                .setAutoPlayAnimations(true)
+                .setOldController(getController())
+                .build();
+        setController(controller);
+    }
+
+
     void updateViewSize(@Nullable ImageInfo imageInfo) {
         if (imageInfo != null) {
             setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());

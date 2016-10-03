@@ -1,6 +1,7 @@
 package com.yonyou.lxp.simple;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.orhanobut.logger.Logger;
@@ -19,6 +22,7 @@ import com.yonyou.lxp.lxp_utils.net.Http;
 import com.yonyou.lxp.lxp_utils.net.ParamsMap;
 import com.yonyou.lxp.lxp_utils.net.ResponseMap;
 import com.yonyou.lxp.lxp_utils.utils.JsonUtils;
+import com.yonyou.lxp.lxp_utils.view.FrescoImageView;
 import com.yonyou.lxp.simple.contract.MainContract;
 
 import java.lang.reflect.Type;
@@ -38,6 +42,8 @@ public class MainActivity extends BaseActivity implements MainContract.IMianView
 
     @BindView(R.id.rv)
     RecyclerView rv;
+    @BindView(R.id.img_gif)
+    FrescoImageView imgGif;
 
     private CommonAdapter<String> adapter;
 
@@ -94,6 +100,12 @@ public class MainActivity extends BaseActivity implements MainContract.IMianView
 
     @Override
     public void doBusiness() {
+        Uri uri=Uri.parse("http://juheimg.oss-cn-hangzhou.aliyuncs.com/joke/201609/18/3C48ABF04D39DD712769DFDEFF4EBFB9.gif");
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setUri(uri)
+                .setAutoPlayAnimations(true)
+                .build();
+        imgGif.setImageGifURI(uri,controller);
 
         ParamsMap paramsMap = new ParamsMap(JOKE_URL, JOKE_URL_RAND)
                 .put("key", JUHE_JOKE_KEY);
