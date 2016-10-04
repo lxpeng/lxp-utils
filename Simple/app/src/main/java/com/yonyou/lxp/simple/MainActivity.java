@@ -42,8 +42,6 @@ public class MainActivity extends BaseActivity implements MainContract.IMianView
 
     @BindView(R.id.rv)
     RecyclerView rv;
-    @BindView(R.id.img_gif)
-    FrescoImageView imgGif;
 
     private CommonAdapter<String> adapter;
 
@@ -71,14 +69,13 @@ public class MainActivity extends BaseActivity implements MainContract.IMianView
     public void initView(View view) {
 
         List list = new ArrayList();
-        for (int i = 0; i < 100; i++) {
-            list.add(i + "============");
-        }
+        list.add("http://juheimg.oss-cn-hangzhou.aliyuncs.com/joke/201609/18/3C48ABF04D39DD712769DFDEFF4EBFB9.gif");
+        list.add("http://juheimg.oss-cn-hangzhou.aliyuncs.com/joke/201609/12/0BD5D302207A10E007875506BA4E3F43.gif");
 
-        adapter = new CommonAdapter<String>(this, list, android.R.layout.simple_list_item_1) {
+        adapter = new CommonAdapter<String>(this, list, R.layout.item_test) {
             @Override
             public void convert(ViewHolder helper, String item, int position) {
-                helper.setText(android.R.id.text1, item);
+                helper.setImageGifByUrl(R.id.img_gif, item);
             }
         };
         adapter.setmOnItemClickListener(new CommonAdapter.OnRecyclerViewItemClickListener() {
@@ -100,12 +97,12 @@ public class MainActivity extends BaseActivity implements MainContract.IMianView
 
     @Override
     public void doBusiness() {
-        Uri uri=Uri.parse("http://juheimg.oss-cn-hangzhou.aliyuncs.com/joke/201609/18/3C48ABF04D39DD712769DFDEFF4EBFB9.gif");
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setUri(uri)
-                .setAutoPlayAnimations(true)
-                .build();
-        imgGif.setImageGifURI(uri,controller);
+//        Uri uri=Uri.parse("http://juheimg.oss-cn-hangzhou.aliyuncs.com/joke/201609/18/3C48ABF04D39DD712769DFDEFF4EBFB9.gif");
+//        DraweeController controller = Fresco.newDraweeControllerBuilder()
+//                .setUri(uri)
+//                .setAutoPlayAnimations(true)
+//                .build();
+//        imgGif.setImageGifURI(uri,controller);
 
         ParamsMap paramsMap = new ParamsMap(JOKE_URL, JOKE_URL_RAND)
                 .put("key", JUHE_JOKE_KEY);

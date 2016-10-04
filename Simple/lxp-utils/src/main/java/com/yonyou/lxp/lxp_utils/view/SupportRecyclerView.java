@@ -91,7 +91,9 @@ public class SupportRecyclerView extends RecyclerView {
             boolean isShowEmptyView = getAdapter().getItemCount() == 0;
             mEmptyView.setVisibility(isShowEmptyView && !shouldShowErrorView() && (mVisibility == VISIBLE) ? VISIBLE : GONE);
             setmNoDataType(1);
-            mNoDataView.setVisibility(View.VISIBLE);
+            if (null!=mNoDataView){
+                mNoDataView.setVisibility(View.VISIBLE);
+            }
             super.setVisibility((!isShowEmptyView && !shouldShowErrorView() && (mVisibility == VISIBLE)) ? VISIBLE : INVISIBLE);
         }
     }
