@@ -1,42 +1,29 @@
 package com.yonyou.lxp.simple;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.orhanobut.logger.Logger;
 import com.yonyou.lxp.lxp_utils.adapter.CommonAdapter;
 import com.yonyou.lxp.lxp_utils.adapter.ViewHolder;
 import com.yonyou.lxp.lxp_utils.base.BaseActivity;
-import com.yonyou.lxp.lxp_utils.net.Http;
 import com.yonyou.lxp.lxp_utils.net.ParamsMap;
-import com.yonyou.lxp.lxp_utils.net.ResponseMap;
 import com.yonyou.lxp.lxp_utils.utils.JsonUtils;
-import com.yonyou.lxp.lxp_utils.view.FrescoImageView;
+import com.yonyou.lxp.lxp_utils.utils.PasswordHash;
 import com.yonyou.lxp.simple.contract.MainContract;
 
-import java.lang.reflect.Type;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import retrofit2.Call;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class MainActivity extends BaseActivity implements MainContract.IMianView {
 
@@ -162,23 +149,37 @@ public class MainActivity extends BaseActivity implements MainContract.IMianView
 
         Observable.just(jsonStrData)
                 .filter(strData -> JsonUtils.isSuccess(strData, "code", "1"))
-                .map(s ->  getInfo(JsonUtils.getJsonStr(s, "data"), User.class))
+                .map(s -> getInfo(JsonUtils.getJsonStr(s, "data"), User.class))
                 .subscribe(u -> Logger.e(u.getName())
                         , throwable -> Logger.e(throwable.getMessage()));
 
 
-
-        if (JsonUtils.isSuccess(jsonStrData, "code", "1")){
+        if (JsonUtils.isSuccess(jsonStrData, "code", "1")) {
             getInfo(JsonUtils.getJsonStr(jsonStrData, "data"), User.class);
-        }else {
+        } else {
             showToast("err");
         }
+        try {
+            String pass = PasswordHash.createHash("a137708871");
+            Logger.e(pass);
+            String pass2 = PasswordHash.createHash("a137708871");
+            boolean isOk = PasswordHash.validatePassword("a137708871", pass);
+            boolean isOk2 = pass.equals(pass2);
+            boolean isOk3 = PasswordHash.validatePassword("a137708871", pass2);
+            Logger.e(pass + "\n" + pass2);
+            Logger.e(isOk + "==" + isOk2+ "==" + isOk3);
 
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
 
     }
 
 
-    private <T>T getInfo(String jsonStr, Class<T> clazz) {
+    private <T> T getInfo(String jsonStr, Class<T> clazz) {
         return gson.fromJson(jsonStr, clazz);
     }
 
